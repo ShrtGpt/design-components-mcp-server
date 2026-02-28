@@ -1,0 +1,172 @@
+<style>
+  .dc-confetti-root {
+    position: relative;
+    display: inline-block;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .dc-confetti-button {
+    font-family: inherit;
+    appearance: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0.65rem 1.4rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #f9fafb;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow:
+      0 12px 30px rgba(37, 99, 235, 0.45),
+      0 0 0 1px rgba(15, 23, 42, 0.35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      background 0.15s ease,
+      filter 0.15s ease;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  .dc-confetti-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+    box-shadow:
+      0 16px 40px rgba(37, 99, 235, 0.55),
+      0 0 0 1px rgba(15, 23, 42, 0.45);
+  }
+
+  .dc-confetti-button:active {
+    transform: translateY(0);
+    box-shadow:
+      0 8px 20px rgba(15, 23, 42, 0.5),
+      0 0 0 1px rgba(15, 23, 42, 0.6);
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  }
+
+  .dc-confetti-button:focus-visible {
+    outline: 2px solid #bfdbfe;
+    outline-offset: 3px;
+  }
+
+  .dc-confetti-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+  }
+</style>
+
+<div class="dc-confetti-root">
+  <button
+    class="dc-confetti-button"
+    type="button"
+    id="dc-confetti-trigger"
+    aria-label="{{ARIA_LABEL}}"
+  >
+    {{LABEL}}
+  </button>
+  <canvas class="dc-confetti-canvas"></canvas>
+</div>
+
+<script>
+  (function () {
+    const script = document.currentScript;
+    if (!script) return;
+
+    const root = script.previousElementSibling;
+    if (!root || !root.classList.contains("dc-confetti-root")) return;
+
+    const button = root.querySelector("#dc-confetti-trigger");
+    const canvas = root.querySelector(".dc-confetti-canvas");
+    if (!button || !canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    function launchConfetti() {
+      const colors = [
+        "#f97316",
+        "#22c55e",
+        "#3b82f6",
+        "#eab308",
+        "#ec4899",
+        "#a855f7"
+      ];
+
+      const pieces = [];
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+
+      for (let i = 0; i < 160; i++) {
+        pieces.push({
+          x: Math.random() * W,
+          y: -20 - Math.random() * H,
+          size: 6 + Math.random() * 6,
+          vy: 2 + Math.random() * 3.5,
+          vx: -1.2 + Math.random() * 2.4,
+          rotation: Math.random() * Math.PI * 2,
+          vr: -0.2 + Math.random() * 0.4,
+          color: colors[i % colors.length]
+        });
+      }
+
+      let start = null;
+
+      function frame(timestamp) {
+        if (!start) start = timestamp;
+        const elapsed = timestamp - start;
+
+        ctx.clearRect(0, 0, W, H);
+
+        for (const p of pieces) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rotation += p.vr;
+
+          if (p.y > H + 20) {
+            p.y = -20;
+            p.x = Math.random() * W;
+          }
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        }
+
+        if (elapsed < 2200) {
+          requestAnimationFrame(frame);
+        } else {
+          ctx.clearRect(0, 0, W, H);
+        }
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    button.addEventListener("click", launchConfetti);
+  })();
+</script>
+

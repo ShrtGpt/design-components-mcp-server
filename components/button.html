@@ -1,0 +1,59 @@
+<style>
+  .dc-button {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    appearance: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0.65rem 1.4rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #f9fafb;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    box-shadow:
+      0 12px 30px rgba(37, 99, 235, 0.45),
+      0 0 0 1px rgba(15, 23, 42, 0.35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      background 0.15s ease,
+      filter 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .dc-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+    box-shadow:
+      0 16px 40px rgba(37, 99, 235, 0.55),
+      0 0 0 1px rgba(15, 23, 42, 0.45);
+  }
+
+  .dc-button:active {
+    transform: translateY(0);
+    box-shadow:
+      0 8px 20px rgba(15, 23, 42, 0.5),
+      0 0 0 1px rgba(15, 23, 42, 0.6);
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  }
+
+  .dc-button:focus-visible {
+    outline: 2px solid #bfdbfe;
+    outline-offset: 3px;
+  }
+</style>
+
+<button
+  class="dc-button"
+  type="button"
+  aria-label="{{ARIA_LABEL}}"
+>
+  {{LABEL}}
+</button>
+
